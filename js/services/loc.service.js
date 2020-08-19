@@ -1,7 +1,9 @@
 export const locService = {
     getLocs: getLocs,
-    getPosition: getPosition
+    getPosition: getPosition,
+    createLocation
 }
+var gLocations = [];
 var locs = [{ lat: 11.22, lng: 22.11 }]
 
 function getLocs() {
@@ -12,12 +14,22 @@ function getLocs() {
     });
 }
 
-
 function getPosition() {
     console.log('Getting Pos');
 
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject)
     })
+}
+
+function createLocation(lat, lng, createdAt, name) {
+    const location = {
+        lat,
+        lng,
+        createdAt,
+        name
+    }
+    gLocations.push(location)
+    console.log(gLocations);
 }
 

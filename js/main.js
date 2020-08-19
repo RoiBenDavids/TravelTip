@@ -2,17 +2,21 @@ console.log('Main!');
 
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
+var gMap;
+var gCurPos = {}
+
 
 
 locService.getLocs()
     .then(locs => console.log('locs', locs))
 
 window.onload = () => {
-    mapService.initMap()
+    initMap()
         .then(() => {
-
-            mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 });
+            addMarker({ lat: 32.0749831, lng: 34.9120554 })
+            addListeners()
         })
+
         .catch(console.log('INIT MAP ERROR'))
 
     locService.getPosition()
@@ -27,18 +31,50 @@ window.onload = () => {
 
 document.querySelector('.btn').addEventListener('click', (ev) => {
     console.log('Aha!', ev.target);
-    mapService.panTo(35.6895, 139.6917);
+    panTo(35.6895, 139.6917);
 })
 
+export function initMap(lat = 32.0749831, lng = 34.9120554) {
+    return mapService.connectGoogleApi()
+        .then(() => {
+            gMap = new google.maps.Map(
+                document.querySelector('#map'), {
+                center: { lat, lng },
+                zoom: 15
+            })
+        })
+}
 
-// function onGetLatLng() {
-//     map.addListener('click', function (mapsMouseEvent) {
-//         // Close the current InfoWindow.
-//         infoWindow.close();
+function addMarker(loc) {
+    var marker = new google.maps.Marker({
+        position: loc,
+        map: gMap,
+        title: 'Hello World!'
+    });
+    return marker;
+}
 
-//         // Create a new InfoWindow.
-//         infoWindow = new google.maps.InfoWindow({ position: mapsMouseEvent.latLng });
-//         infoWindow.setContent(mapsMouseEvent.latLng.toString());
-//         infoWindow.open(map);
-//     });
-// }
+function panTo(lat, lng) {
+    var laLatLng = new google.maps.LatLng(lat, lng);
+    gMap.panTo(laLatLng);
+}
+
+function onGetClickedPos(ev) {
+    const elModal = document.querySelector('.location-name-modal')
+    elModal.hidden = false;
+    gCurPos.lat = ev.latLng.lat();
+    gCurPos.lng = ev.latLng.lng();
+}
+
+function onSavePos() {
+    console.log('hiii');
+    const name = document.querySelector('.location-name-input').value
+    locService.createLocation(gCurPos.lat, gCurPos.lng, Date.now(), name);
+}
+
+function addListeners() {
+    gMap.addListener('click', onGetClickedPos)
+    const elModal = document.querySelector('.location-name-modal button')
+    elModal.onclick = onSavePos;
+}
+
