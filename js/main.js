@@ -5,10 +5,18 @@ import { mapService } from './services/map.service.js'
 var gMap;
 var gCurPos = {}
 
+
 locService.getLocs()
     .then(locs => console.log('locs', locs))
 
 window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams) {
+        gCurPos.lan = urlParams.get('lan');
+        gCurPos.lng = urlParams.get('lng');
+        console.log(gCurPos, 'yeah man');
+    }
+
     initMap()
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 })
@@ -79,20 +87,52 @@ function addListeners() {
     elModal.onclick = onSavePos;
     const elSearch = document.querySelector('.search-location button')
     elSearch.addEventListener('click', onSubmitSearch)
-     document.querySelector('.location-table').onclick = eventHandler;
-     
+    document.querySelector('.location-table').onclick = eventHandler;
+    const elCopy = document.querySelector('.copy-location')
+    elCopy.addEventListener('click', onCopyLink)
 
 }
 
-function eventHandler(ev){
+function eventHandler(ev) {
     if (ev.target.className === 'goto-location') onGotoLocation(ev)
     else onDeleteLocation(ev)
 }
 
+
+function onCopyLink() {
+    console.log('hiii');
+    const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+    console.log(url);
+
+
+}
+
+
 function onSubmitSearch(ev) {
     ev.preventDefault();
     const elInput = document.querySelector('.search-input')
-    mapService.searchLoc(elInput.value)
+    searchLoc(elInput.value)
+        .then(res => {
+            gCurPos.lat = res.geometry.location.lat();
+            gCurPos.lng = res.geometry.location.lng();
+            panTo(gCurPos.lat, gCurPos.lng)
+            elInput.value = ''
+            renderLocationName(res.formatted_address)
+        })
+}
+function searchLoc(att) {
+    var res;
+    var geocoder = new google.maps.Geocoder
+    return new Promise((resolve, reject) => {
+        geocoder.geocode({ 'address': att }, (results, status) => {
+            if (status == 'OK') {
+                resolve(results[0])
+
+            } else {
+                reject(alert('Geocode was not successful for the following reason: ' + status));
+            }
+        })
+    })
 }
 
 
@@ -125,11 +165,15 @@ function onDeleteLocation(ev) {
     renderTable()
 }
 
-function onGotoLocation(ev){
+function onGotoLocation(ev) {
     if (!ev.target.dataset.id) return;
     const itemId = ev.target.dataset.id;
-   let position = locService.findLocation(itemId)
-   panTo(position.lat, position.lng)
+    let position = locService.findLocation(itemId)
+    panTo(position.lat, position.lng)
 
 }
 
+
+function renderLocationName(name) {
+    document.querySelector('.current-location').innerText = name;
+}
