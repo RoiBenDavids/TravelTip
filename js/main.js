@@ -5,10 +5,18 @@ import { mapService } from './services/map.service.js'
 var gMap;
 var gCurPos = {}
 
+
 locService.getLocs()
     .then(locs => console.log('locs', locs))
 
 window.onload = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams){
+        gCurPos.lan = urlParams.get('lan');
+        gCurPos.lng = urlParams.get('lng');
+        console.log(gCurPos,'yeah man');
+    }
+
     initMap()
         .then(() => {
             addMarker({ lat: 32.0749831, lng: 34.9120554 })
@@ -77,19 +85,49 @@ function addListeners() {
     const elModal = document.querySelector('.location-name-modal button')
     elModal.onclick = onSavePos;
     const elSearch = document.querySelector('.search-location button')
-    elSearch.addEventListener('click',onSubmitSearch)
+    elSearch.addEventListener('click', onSubmitSearch)
+    const elCopy = document.querySelector('.copy-location')
+    elCopy.addEventListener('click', onCopyLink)
+
 }
 
-<<<<<<< HEAD
+function onCopyLink(){
+    console.log('hiii');
+   const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+   console.log(url);
 
-function onSubmitSearch(ev){
-        ev.preventDefault();
-        const elInput =document.querySelector('.search-input')
-        mapService.searchLoc(elInput.value)
+
 }
 
 
-=======
+function onSubmitSearch(ev) {
+    ev.preventDefault();
+    const elInput = document.querySelector('.search-input')
+    searchLoc(elInput.value)
+        .then(res => {
+            gCurPos.lat = res.geometry.location.lat();
+            gCurPos.lng = res.geometry.location.lng();
+            panTo(gCurPos.lat,gCurPos.lng )
+            elInput.value = ''
+            renderLocationName(res.formatted_address)
+        })
+}
+function searchLoc(att) {
+    var res;
+    var geocoder = new google.maps.Geocoder
+    return new Promise((resolve, reject) => {
+        geocoder.geocode({ 'address': att }, (results, status) => {
+            if (status == 'OK') {
+                resolve(results[0])
+
+            } else {
+                reject(alert('Geocode was not successful for the following reason: ' + status));
+            }
+        })
+    })
+}
+
+
 function renderTable(locations) {
     var locations = locService.getLocations();
     if (!locations || locations.length === 0) {
@@ -107,9 +145,12 @@ function renderTable(locations) {
     document.querySelector('.location-table').innerHTML = strHTMLs.join('')
 }
 
-function hideLocationModal(){
+function hideLocationModal() {
     document.querySelector('.location-name-input').value = ''
     document.querySelector('.location-name-modal').hidden = true;
-    
+
 }
->>>>>>> 80d6a07a5aa44b1aff27062e2bef60fb1e866153
+
+function renderLocationName(name) {
+    document.querySelector('.current-location').innerText = name;
+}
