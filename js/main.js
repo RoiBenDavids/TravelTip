@@ -5,8 +5,6 @@ import { mapService } from './services/map.service.js'
 var gMap;
 var gCurPos = {}
 
-
-
 locService.getLocs()
     .then(locs => console.log('locs', locs))
 
@@ -68,8 +66,10 @@ function onGetClickedPos(ev) {
 
 function onSavePos() {
     console.log('hiii');
-    const name = document.querySelector('.location-name-input').value
-    locService.createLocation(gCurPos.lat, gCurPos.lng, Date.now(), name);
+    const elName = document.querySelector('.location-name-input')
+    locService.createLocation(gCurPos.lat, gCurPos.lng, Date.now(), elName.value);
+    renderTable()
+    hideLocationModal()
 }
 
 function addListeners() {
@@ -80,6 +80,7 @@ function addListeners() {
     elSearch.addEventListener('click',onSubmitSearch)
 }
 
+<<<<<<< HEAD
 
 function onSubmitSearch(ev){
         ev.preventDefault();
@@ -88,3 +89,27 @@ function onSubmitSearch(ev){
 }
 
 
+=======
+function renderTable(locations) {
+    var locations = locService.getLocations();
+    if (!locations || locations.length === 0) {
+        document.querySelector('.location-table').innerHTML = 'No items to display'
+        return
+    }
+    var strHTMLs = locations.map((pos) => {
+        return `<li class="flex column">
+                    <h4 class="location-name">${pos.id} - ${pos.name} </h4>
+                    <p class="location-position" data-lat="${pos.lat}" data-lng="${pos.lng}" > lat:${pos.lat}, lng:${pos.lng}</p>
+                    <button class="delete-location" data-id="${pos.id}">X</button>
+                    <button class="goto-location" data-id="${pos.id}">Go</button>
+                    </li>`
+    })
+    document.querySelector('.location-table').innerHTML = strHTMLs.join('')
+}
+
+function hideLocationModal(){
+    document.querySelector('.location-name-input').value = ''
+    document.querySelector('.location-name-modal').hidden = true;
+    
+}
+>>>>>>> 80d6a07a5aa44b1aff27062e2bef60fb1e866153
