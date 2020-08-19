@@ -10,7 +10,7 @@ function initCurPos(){
     gCurPos.lng=34.9120554;
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams) {
-        console.log(urlParams.getAll(),urlParams.keys());
+        console.log(urlParams.keys());
         gCurPos.lan = urlParams.get('lan');
         gCurPos.lng = urlParams.get('lng');
         console.log(gCurPos.lan,gCurPos.lng,'yeah man');
