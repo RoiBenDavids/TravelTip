@@ -25,7 +25,7 @@ window.onload = () => {
     initCurPos();
     initMap(+gCurPos.lat,+gCurPos.lng)
         .then(() => {
-            addMarker({ lat: gCurPos.lat, lng: gCurPos.lng })
+            // addMarker({ lat: gCurPos.lat, lng: gCurPos.lng })
             addListeners()
         })
 
