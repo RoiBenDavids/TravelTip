@@ -111,7 +111,7 @@ function eventHandler(ev) {
 function onCopyLink() {
     console.log('hiii');
     console.log(gCurPos.lat,gCurPos.lng);
-   const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+   const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
    console.log(url);
 
 
