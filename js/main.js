@@ -76,5 +76,15 @@ function addListeners() {
     gMap.addListener('click', onGetClickedPos)
     const elModal = document.querySelector('.location-name-modal button')
     elModal.onclick = onSavePos;
+    const elSearch = document.querySelector('.search-location button')
+    elSearch.addEventListener('click',onSubmitSearch)
 }
+
+
+function onSubmitSearch(ev){
+        ev.preventDefault();
+        const elInput =document.querySelector('.search-input')
+        mapService.searchLoc(elInput.value)
+}
+
 

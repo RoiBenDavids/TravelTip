@@ -1,6 +1,7 @@
 
 export const mapService = {
-    connectGoogleApi
+    connectGoogleApi,
+    searchLoc
 }
 
 var map;
@@ -19,4 +20,16 @@ function connectGoogleApi() {
     })
 }
 
+function searchLoc(att) {
+    var geocoder = new google.maps.Geocoder
+   return geocoder.geocode({ 'address': att }, function (results, status) {
+        if (status == 'OK') {
+            return results[0].geometry.location.toString()
+           
+        } else {
+            return alert('Geocode was not successful for the following reason: ' + status);
+        }
+    })
 
+
+}
