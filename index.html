@@ -14,7 +14,7 @@
             <div class="header-top flex justify-end">
                 <h1 class="self-justify-start">TravelTip</h1>
                 <form class="search-location" onsubmit="onSubmitSearch(event)" action="">
-                    <input type="text"  placeholder="Enter Location" class="search-input">
+                    <input type="text" placeholder="Enter Location" class="search-input">
                     <button>Go</button>
                 </form>
                 <button class="user-location-btn">My Location</button>
@@ -27,7 +27,9 @@
 
         <div class="main-container flex">
             <div class="main-side-bar flex column">
-                <div class="weather"></div>
+                <div class="weather">
+                    <h3>Weather Today</h3>
+                </div>
                 <ul class="location-table"></ul>
             </div>
             <div id="map" style="width: 50%; height: 400px;"></div>
@@ -35,10 +37,8 @@
         <button class="btn">Click Me</button>
 
         <div class="location-name-modal" hidden>
-            <!-- <form action=""> -->
-                <input type="text" class="location-name-input" placeholder="What is this place?">
-                <button>Save Location</button>
-            <!-- </form> -->
+            <input type="text" class="location-name-input" placeholder="What is this place?">
+            <button>Save Location</button>
         </div>
 
     </div>

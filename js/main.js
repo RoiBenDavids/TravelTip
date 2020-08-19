@@ -6,13 +6,14 @@ var gMap;
 var gCurPos = {}
 
 function initCurPos() {
-    gCurPos.lan = 32.0749831;
+    gCurPos.lat = 32.0749831;
     gCurPos.lng = 34.9120554;
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams) {
-        gCurPos.lan = urlParams.get('lan');
+        console.log(urlParams.keys());
+        gCurPos.lat = urlParams.get('lat');
         gCurPos.lng = urlParams.get('lng');
-        console.log(gCurPos.lan, gCurPos.lng, 'yeah man');
+        console.log(gCurPos.lat, gCurPos.lng, 'yeah man');
     }
 
 }
@@ -22,16 +23,13 @@ locService.getLocs()
 
 window.onload = () => {
     initCurPos();
-    initMap()
+    initMap(+gCurPos.lat, +gCurPos.lng)
         .then(() => {
-            panTo(gCurPos.lan, gCurPos.lng)
-            addMarker('You Here', { lat: gCurPos.lan, lng: gCurPos.lng })
             addListeners()
-            var locations = getLocations()
+            var locations = locService.getLocations()
+            renderTable(locations)
             if (locations) {
-                locations.map((pos) => {
-                    addMarker(pos.name, { lat: pos.lat, lng: pos.lng })
-                })
+                renderMarks(locations)
             }
         })
 
@@ -53,6 +51,7 @@ document.querySelector('.btn').addEventListener('click', (ev) => {
 })
 
 export function initMap(lat = 32.0749831, lng = 34.9120554) {
+    console.log(lat, lng);
     return mapService.connectGoogleApi()
         .then(() => {
             gMap = new google.maps.Map(
@@ -63,11 +62,12 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
         })
 }
 
-function addMarker(name, loc) {
+function addMarker(id, name, loc) {
+    console.log(name);
     var marker = new google.maps.Marker({
         position: loc,
         map: gMap,
-        // label: name
+        label: id + ''
     });
     var infowindow = new google.maps.InfoWindow({
         content: name
@@ -90,11 +90,11 @@ function onGetClickedPos(ev) {
     gCurPos.lng = ev.latLng.lng();
 }
 
-function onSavePos() {
-    console.log('hiii');
+function onSavePos(ev) {
     const elName = document.querySelector('.location-name-input')
-    locService.createLocation(gCurPos.lat, gCurPos.lng, Date.now(), elName.value);
-    addMarker(elName.value, gCurPos)
+    var currClickesPos = locService.createLocation(gCurPos.lat, gCurPos.lng, Date.now(), elName.value);
+    console.log(currClickesPos);
+    addMarker(currClickesPos.id, elName.value, gCurPos)
     renderTable()
     hideLocationModal()
 }
@@ -102,30 +102,35 @@ function onSavePos() {
 
 function addListeners() {
     gMap.addListener('click', onGetClickedPos)
-    const elModal = document.querySelector('.location-name-modal button')
-    elModal.onclick = onSavePos;
+    const elModalBtn = document.querySelector('.location-name-modal button')
+    elModalBtn.onclick = onSavePos;
+    const elModalInput = document.querySelector('.location-name-modal')
+    elModalInput.addEventListener('keyup', ev => {
+        if (ev.keyCode !== 13) return
+        else onSavePos(ev)
+    })
     const elSearch = document.querySelector('.search-location button')
     elSearch.addEventListener('click', onSubmitSearch)
     document.querySelector('.location-table').onclick = eventHandler;
     const elCopy = document.querySelector('.copy-location')
     elCopy.addEventListener('click', onCopyLink)
     document.querySelector('.user-location-btn').onclick = getPosition;
-
 }
 
 function eventHandler(ev) {
-    if (ev.target.className === 'goto-location') onGotoLocation(ev)
-    else onDeleteLocation(ev)
+    if (!ev.target.dataset.id) return;
+    const itemId = ev.target.dataset.id;
+    if (ev.target.className === 'goto-location') onGotoLocation(itemId)
+    else onDeleteLocation(itemId)
 }
 
 
 function onCopyLink() {
     console.log('hiii');
-    const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+    console.log(gCurPos.lat, gCurPos.lng);
+    const url = `https://roitheone.github.io/TravelTip/index.html?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
     console.log(url);
-
 }
-
 
 function onSubmitSearch(ev) {
     ev.preventDefault();
@@ -172,24 +177,28 @@ function renderTable(locations) {
     document.querySelector('.location-table').innerHTML = strHTMLs.join('')
 }
 
+function renderMarks(locations) {
+
+    locations.map((pos) => {
+        addMarker(pos.id, pos.name, { lat: pos.lat, lng: pos.lng })
+    })
+}
+
 function hideLocationModal() {
     document.querySelector('.location-name-input').value = ''
     document.querySelector('.location-name-modal').hidden = true;
 }
 
-function onDeleteLocation(ev) {
-    if (!ev.target.dataset.id) return;
-    const itemId = ev.target.dataset.id;
+function onDeleteLocation(itemId) {
     locService.deleteLocation(itemId)
     renderTable()
+    // const locations = locService.getLocations()
+    // renderMarks(locations) // i was trying to delete specipic marker ->cannot do it. just all together or reload page every time
 }
 
-function onGotoLocation(ev) {
-    if (!ev.target.dataset.id) return;
-    const itemId = ev.target.dataset.id;
+function onGotoLocation(itemId) {
     let position = locService.findLocation(itemId)
     panTo(position.lat, position.lng)
-
 }
 
 

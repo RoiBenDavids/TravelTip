@@ -11,7 +11,7 @@ export const locService = {
 }
 
 const KEY = 'LOCATIONS';
-var gNextId = 100;
+var gNextId;
 
 var gLocations = [];
 var locs = [{ lat: 11.22, lng: 22.11 }]
@@ -24,9 +24,9 @@ function getLocs() {
     });
 }
 
-
-
 function createLocation(lat, lng, createdAt, name) {
+    if (!gLocations.length) gNextId = 100;
+    else gNextId = gLocations[gLocations.length - 1].id + 1;
     const location = {
         id: gNextId++,
         lat,
@@ -36,6 +36,7 @@ function createLocation(lat, lng, createdAt, name) {
     }
     gLocations.push(location)
     storageService.saveToStorage(KEY, gLocations)
+    return location
 }
 
 function getLocations() {
