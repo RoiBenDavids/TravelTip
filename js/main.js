@@ -6,12 +6,12 @@ var gMap;
 var gCurPos = {}
 
 function initCurPos(){
-    gCurPos.lan=32.0749831;
+    gCurPos.lat=32.0749831;
     gCurPos.lng=34.9120554;
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams) {
         console.log(urlParams.keys());
-        gCurPos.lan = urlParams.get('lan');
+        gCurPos.lan = urlParams.get('lat');
         gCurPos.lng = urlParams.get('lng');
         console.log(gCurPos.lan,gCurPos.lng,'yeah man');
     }
