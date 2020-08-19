@@ -5,21 +5,27 @@ import { mapService } from './services/map.service.js'
 var gMap;
 var gCurPos = {}
 
+function initCurPos(){
+    gCurPos.lan=32.0749831;
+    gCurPos.lng=34.9120554;
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams) {
+        gCurPos.lan = urlParams.get('lan');
+        gCurPos.lng = urlParams.get('lng');
+        console.log(gCurPos.lan,gCurPos.lng,'yeah man');
+    }
+
+}
 
 locService.getLocs()
     .then(locs => console.log('locs', locs))
 
 window.onload = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams) {
-        gCurPos.lan = urlParams.get('lan');
-        gCurPos.lng = urlParams.get('lng');
-        console.log(gCurPos, 'yeah man');
-    }
-
+    initCurPos();
     initMap()
         .then(() => {
-            addMarker({ lat: 32.0749831, lng: 34.9120554 })
+            panTo(gCurPos.lan,gCurPos.lng)
+            addMarker({ lat: gCurPos.lan, lng: gCurPos.lng })
             addListeners()
         })
 
@@ -103,8 +109,8 @@ function eventHandler(ev) {
 
 function onCopyLink() {
     console.log('hiii');
-    const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
-    console.log(url);
+   const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+   console.log(url);
 
 
 }
