@@ -1,11 +1,14 @@
 import { storageService } from './storage.service.js'
+import { utils } from './utlis.js'
 
 
 export const locService = {
     getLocs: getLocs,
     getPosition: getPosition,
     createLocation,
-    getLocations
+    getLocations,
+    deleteLocation,
+    findLocation
 }
 
 const KEY = 'LOCATIONS';
@@ -45,4 +48,19 @@ function createLocation(lat, lng, createdAt, name) {
 
 function getLocations() {
     return gLocations;
+}
+
+function deleteLocation(locationId) {
+    var locationIdx = utils.findIdxById(locationId, gLocations);
+    gLocations.splice(locationIdx, 1)
+    storageService.saveToStorage(KEY, gLocations)
+}
+
+
+function findLocation(id){
+    const locationIdx = utils.findIdxById(id, gLocations);;
+    let lat = gLocations[locationIdx].lat
+    let lng = gLocations[locationIdx].lng
+
+    return {lat,lng}
 }

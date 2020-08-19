@@ -9,10 +9,14 @@ function initCurPos(){
     gCurPos.lan=32.0749831;
     gCurPos.lng=34.9120554;
     const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams){
+    if (urlParams) {
         gCurPos.lan = urlParams.get('lan');
         gCurPos.lng = urlParams.get('lng');
+<<<<<<< HEAD
         console.log(gCurPos.lan,gCurPos.lng,'yeah man');
+=======
+        console.log(gCurPos, 'yeah man');
+>>>>>>> e18714e0c44c83a1fef6647001b8bc653cc5b758
     }
 
 }
@@ -86,21 +90,34 @@ function onSavePos() {
     hideLocationModal()
 }
 
+
 function addListeners() {
     gMap.addListener('click', onGetClickedPos)
     const elModal = document.querySelector('.location-name-modal button')
     elModal.onclick = onSavePos;
     const elSearch = document.querySelector('.search-location button')
     elSearch.addEventListener('click', onSubmitSearch)
+    document.querySelector('.location-table').onclick = eventHandler;
     const elCopy = document.querySelector('.copy-location')
     elCopy.addEventListener('click', onCopyLink)
 
 }
 
-function onCopyLink(){
+function eventHandler(ev) {
+    if (ev.target.className === 'goto-location') onGotoLocation(ev)
+    else onDeleteLocation(ev)
+}
+
+
+function onCopyLink() {
     console.log('hiii');
+<<<<<<< HEAD
    const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
    console.log(url);
+=======
+    const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+    console.log(url);
+>>>>>>> e18714e0c44c83a1fef6647001b8bc653cc5b758
 
 
 }
@@ -113,7 +130,7 @@ function onSubmitSearch(ev) {
         .then(res => {
             gCurPos.lat = res.geometry.location.lat();
             gCurPos.lng = res.geometry.location.lng();
-            panTo(gCurPos.lat,gCurPos.lng )
+            panTo(gCurPos.lat, gCurPos.lng)
             elInput.value = ''
             renderLocationName(res.formatted_address)
         })
@@ -154,8 +171,23 @@ function renderTable(locations) {
 function hideLocationModal() {
     document.querySelector('.location-name-input').value = ''
     document.querySelector('.location-name-modal').hidden = true;
+}
+
+function onDeleteLocation(ev) {
+    if (!ev.target.dataset.id) return;
+    const itemId = ev.target.dataset.id;
+    locService.deleteLocation(itemId)
+    renderTable()
+}
+
+function onGotoLocation(ev) {
+    if (!ev.target.dataset.id) return;
+    const itemId = ev.target.dataset.id;
+    let position = locService.findLocation(itemId)
+    panTo(position.lat, position.lng)
 
 }
+
 
 function renderLocationName(name) {
     document.querySelector('.current-location').innerText = name;
