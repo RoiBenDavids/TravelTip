@@ -12,11 +12,7 @@ function initCurPos(){
     if (urlParams) {
         gCurPos.lan = urlParams.get('lan');
         gCurPos.lng = urlParams.get('lng');
-<<<<<<< HEAD
         console.log(gCurPos.lan,gCurPos.lng,'yeah man');
-=======
-        console.log(gCurPos, 'yeah man');
->>>>>>> e18714e0c44c83a1fef6647001b8bc653cc5b758
     }
 
 }
@@ -111,13 +107,8 @@ function eventHandler(ev) {
 
 function onCopyLink() {
     console.log('hiii');
-<<<<<<< HEAD
    const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
    console.log(url);
-=======
-    const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
-    console.log(url);
->>>>>>> e18714e0c44c83a1fef6647001b8bc653cc5b758
 
 
 }
