@@ -3,7 +3,7 @@ import { utils } from './utlis.js'
 
 
 export const locService = {
-    getLocs: getLocs,
+    getLocs,
     createLocation,
     getLocations,
     deleteLocation,

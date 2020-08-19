@@ -102,13 +102,15 @@ function onSavePos(ev) {
 
 function addListeners() {
     gMap.addListener('click', onGetClickedPos)
-    const elModalBtn = document.querySelector('.location-name-modal button')
+    const elModalBtn = document.querySelector('.location-name-modal .save-location')
     elModalBtn.onclick = onSavePos;
     const elModalInput = document.querySelector('.location-name-modal')
     elModalInput.addEventListener('keyup', ev => {
         if (ev.keyCode !== 13) return
         else onSavePos(ev)
     })
+    const elCloseModal = document.querySelector('.location-name-modal .close-modal')
+    elCloseModal.onclick = hideLocationModal;
     const elSearch = document.querySelector('.search-location button')
     elSearch.addEventListener('click', onSubmitSearch)
     document.querySelector('.location-table').onclick = eventHandler;
@@ -126,7 +128,6 @@ function eventHandler(ev) {
 
 
 function onCopyLink() {
-    console.log('hiii');
     console.log(gCurPos.lat, gCurPos.lng);
     const url = `https://roitheone.github.io/TravelTip/index.html?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
     console.log(url);
@@ -168,17 +169,17 @@ function renderTable(locations) {
     }
     var strHTMLs = locations.map((pos) => {
         return `<li class="flex column">
-                    <h4 class="location-name">${pos.id} - ${pos.name} </h4>
-                    <p class="location-position" data-lat="${pos.lat}" data-lng="${pos.lng}" > lat:${pos.lat}, lng:${pos.lng}</p>
                     <button class="delete-location" data-id="${pos.id}">X</button>
                     <button class="goto-location" data-id="${pos.id}">Go</button>
+                    <h4 class="location-name">${pos.id} - ${pos.name} </h4>
+                    <p class="location-position" data-lat="${pos.lat}" data-lng="${pos.lng}" > lat:${pos.lat}, lng:${pos.lng}</p>
+
                     </li>`
     })
     document.querySelector('.location-table').innerHTML = strHTMLs.join('')
 }
 
 function renderMarks(locations) {
-
     locations.map((pos) => {
         addMarker(pos.id, pos.name, { lat: pos.lat, lng: pos.lng })
     })
@@ -210,7 +211,6 @@ function renderLocationName(name) {
 function getPosition() {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition((res) => {
-            console.log(res, 'res');
             gCurPos.lat = res.coords.latitude
             gCurPos.lng = res.coords.longitude
             resolve(panTo(gCurPos))

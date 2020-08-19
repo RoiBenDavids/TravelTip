@@ -17,7 +17,7 @@
                     <input type="text" placeholder="Enter Location" class="search-input">
                     <button>Go</button>
                 </form>
-                <button class="user-location-btn">My Location</button>
+                <button class="user-location-btn"> <img class="location" src="./img/target.jpg"></button>
             </div>
             <div class="header-bottom flex justify-between">
                 <h3>Location: <Span class="current-location"></Span></h3>
@@ -26,19 +26,20 @@
         </div>
 
         <div class="main-container flex">
+            <div id="map" style="width:65%; height: 500px;"></div>
             <div class="main-side-bar flex column">
-                <div class="weather">
+                <!-- <div class="weather">
                     <h3>Weather Today</h3>
-                </div>
+                </div> -->
                 <ul class="location-table"></ul>
             </div>
-            <div id="map" style="width: 50%; height: 400px;"></div>
         </div>
-        <button class="btn">Click Me</button>
+        <!-- <button class="btn">Take me to Tokyo!</button> -->
 
-        <div class="location-name-modal" hidden>
+        <div class="location-name-modal" hidden >
             <input type="text" class="location-name-input" placeholder="What is this place?">
-            <button>Save Location</button>
+            <button class="save-location">Save Location</button>
+            <button class="close-modal">X</button>
         </div>
 
     </div>
