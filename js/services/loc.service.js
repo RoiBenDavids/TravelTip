@@ -4,7 +4,6 @@ import { utils } from './utlis.js'
 
 export const locService = {
     getLocs: getLocs,
-    getPosition: getPosition,
     createLocation,
     getLocations,
     deleteLocation,
@@ -26,13 +25,6 @@ function getLocs() {
 }
 
 
-function getPosition() {
-    console.log('Getting Pos');
-
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject)
-    })
-}
 
 function createLocation(lat, lng, createdAt, name) {
     const location = {
@@ -57,10 +49,10 @@ function deleteLocation(locationId) {
 }
 
 
-function findLocation(id){
+function findLocation(id) {
     const locationIdx = utils.findIdxById(id, gLocations);;
     let lat = gLocations[locationIdx].lat
     let lng = gLocations[locationIdx].lng
 
-    return {lat,lng}
+    return { lat, lng }
 }

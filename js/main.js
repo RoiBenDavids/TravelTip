@@ -25,7 +25,7 @@ window.onload = () => {
 
         .catch(console.log('INIT MAP ERROR'))
 
-    locService.getPosition()
+    getPosition()
         .then(pos => {
 
             console.log('User position is:', pos.coords);
@@ -61,6 +61,7 @@ function addMarker(loc) {
 }
 
 function panTo(lat, lng) {
+    console.log(lat, lng, 'mylocation');
     var laLatLng = new google.maps.LatLng(lat, lng);
     gMap.panTo(laLatLng);
 }
@@ -90,6 +91,7 @@ function addListeners() {
     document.querySelector('.location-table').onclick = eventHandler;
     const elCopy = document.querySelector('.copy-location')
     elCopy.addEventListener('click', onCopyLink)
+    document.querySelector('.user-location-btn').onclick = getPosition;
 
 }
 
@@ -176,4 +178,35 @@ function onGotoLocation(ev) {
 
 function renderLocationName(name) {
     document.querySelector('.current-location').innerText = name;
+}
+
+
+function getPosition() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition((res) => {
+            console.log(res, 'res');
+            gCurPos.lat = res.coords.latitude
+            gCurPos.lng = res.coords.longitude
+            resolve(panTo(gCurPos))
+        }, (err)=>{
+            reject(handleLocationError(err))})
+    })
+}
+
+function handleLocationError(error) {
+    var locationError = document.querySelector('.current-location');
+    switch (error.code) {
+        case 0:
+            locationError.innerHTML = "There was an error while retrieving your location: " + error.message;
+            break;
+        case 1:
+            locationError.innerHTML = "The user didn't allow this page to retrieve a location.";
+            break;
+        case 2:
+            locationError.innerHTML = "The browser was unable to determine your location: " + error.message;
+            break;
+        case 3:
+            locationError.innerHTML = "The browser timed out before retrieving the location.";
+            break;
+    }
 }
