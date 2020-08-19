@@ -11,9 +11,9 @@ function initCurPos(){
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams) {
         console.log(urlParams.keys());
-        gCurPos.lan = urlParams.get('lat');
+        gCurPos.lat = urlParams.get('lat');
         gCurPos.lng = urlParams.get('lng');
-        console.log(gCurPos.lan,gCurPos.lng,'yeah man');
+        console.log(gCurPos.lat,gCurPos.lng,'yeah man');
     }
 
 }
@@ -25,8 +25,8 @@ window.onload = () => {
     initCurPos();
     initMap()
         .then(() => {
-            panTo(gCurPos.lan,gCurPos.lng)
-            addMarker({ lat: gCurPos.lan, lng: gCurPos.lng })
+            panTo(gCurPos.lat,gCurPos.lng)
+            addMarker({ lat: gCurPos.lat, lng: gCurPos.lng })
             addListeners()
         })
 
