@@ -23,9 +23,8 @@ locService.getLocs()
 
 window.onload = () => {
     initCurPos();
-    initMap()
+    initMap(gCurPos.lat,gCurPos.lng)
         .then(() => {
-            panTo(gCurPos.lat,gCurPos.lng)
             addMarker({ lat: gCurPos.lat, lng: gCurPos.lng })
             addListeners()
         })
@@ -111,7 +110,7 @@ function eventHandler(ev) {
 function onCopyLink() {
     console.log('hiii');
     console.log(gCurPos.lat,gCurPos.lng);
-   const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+   const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
    console.log(url);
 
 
