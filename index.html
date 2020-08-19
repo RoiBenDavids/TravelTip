@@ -1,15 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ES6</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
-    <h1>ES6</h1>
-    <div id="map" style="width: 100%; height: 400px;"></div>
-    <button class="btn">Click Me</button>
-    
+    <div class="content flex column">
+        <div class="header">
+            <div class="header-top flex justify-end">
+                <h1 class="self-justify-start">TravelTip</h1>
+                <form class="search-location" action="">
+                    <input type="text" placeholder="Enter Location" class="search-input">
+                    <button>Go</button>
+                </form>
+                <button class="user-location-btn">My Location</button>
+            </div>
+            <div class="header-bottom flex justify-between">
+                <h3>Location: <Span class="current-location"></Span></h3>
+                <button class="copy-location">Copy Location</button>
+            </div>
+        </div>
+
+        <div class="main-container flex">
+            <div class="main-side-bar flex column">
+                <div class="weather"></div>
+                <ul class="location-table"></ul>
+            </div>
+            <div id="map" style="width: 50%; height: 400px;"></div>
+        </div>
+        <button class="btn">Click Me</button>
+
+        <div class="location-name-modal" hidden>
+            <!-- <form action=""> -->
+                <input type="text" class="location-name-input" placeholder="What is this place?">
+                <button>Save Location</button>
+            <!-- </form> -->
+        </div>
+
+    </div>
+
     <script type="module" src="js/main.js"></script>
 </body>
+
 </html>

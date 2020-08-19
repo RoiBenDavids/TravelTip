@@ -13,7 +13,7 @@ window.onload = () => {
 
             mapService.addMarker({ lat: 32.0749831, lng: 34.9120554 });
         })
-        .catch(console.log('INIT MAP ERROR'));
+        .catch(console.log('INIT MAP ERROR'))
 
     locService.getPosition()
         .then(pos => {
@@ -29,3 +29,16 @@ document.querySelector('.btn').addEventListener('click', (ev) => {
     console.log('Aha!', ev.target);
     mapService.panTo(35.6895, 139.6917);
 })
+
+
+// function onGetLatLng() {
+//     map.addListener('click', function (mapsMouseEvent) {
+//         // Close the current InfoWindow.
+//         infoWindow.close();
+
+//         // Create a new InfoWindow.
+//         infoWindow = new google.maps.InfoWindow({ position: mapsMouseEvent.latLng });
+//         infoWindow.setContent(mapsMouseEvent.latLng.toString());
+//         infoWindow.open(map);
+//     });
+// }

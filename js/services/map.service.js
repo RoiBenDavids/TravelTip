@@ -1,4 +1,6 @@
 
+
+var gLocations = [];
 export const mapService = {
     initMap,
     addMarker,
@@ -6,6 +8,8 @@ export const mapService = {
 }
 
 var map;
+var gCreatedAt;
+var gLatLngPos;
 
 export function initMap(lat = 32.0749831, lng = 34.9120554) {
     console.log('InitMap');
@@ -18,6 +22,21 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
                 zoom: 15
             })
             console.log('Map!', map);
+            map.addListener('click', (ev) => {
+                gCreatedAt = Date.now();
+                console.log(ev.latLng.lat(), ev.latLng.lng());
+                var infoWindow = new google.maps.InfoWindow({ position: ev.latLng });
+                infoWindow.setContent(ev.latLng.toString());
+                infoWindow.open(map)
+                const elModal = document.querySelector('.location-name-modal')
+                elModal.hidden = false;
+                gLatLngPos = ev.latLng;
+                elModal.querySelector('button').addEventListener('click', function () {
+                    console.log(gLatLngPos, gCreatedAt);
+                    const name = document.querySelector('.location-name-input').value
+                    createLocation(gLatLngPos.lat(), gLatLngPos.lng(), gCreatedAt, name)
+                })
+            })
         })
 }
 
@@ -39,7 +58,7 @@ function _connectGoogleApi() {
     if (window.google) return Promise.resolve()
     const API_KEY = ''; //TODO: Enter your API Key
     var elGoogleApi = document.createElement('script');
-    elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}`;
+    elGoogleApi.src = `https://maps.googleapis.com/maps/api/js?key=AIzaSyAyh-e95qHw8jDLgKt_1m9eT34jQG665jU`;
     elGoogleApi.async = true;
     document.body.append(elGoogleApi);
 
@@ -49,5 +68,14 @@ function _connectGoogleApi() {
     })
 }
 
-
+function createLocation(lat, lng, createdAt, name) {
+    const location = {
+        lat,
+        lng,
+        createdAt,
+        name
+    }
+    gLocations.push(location)
+    console.log(gLocations);
+}
 
