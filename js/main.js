@@ -72,24 +72,30 @@ function onSavePos() {
     hideLocationModal()
 }
 
+
 function addListeners() {
     gMap.addListener('click', onGetClickedPos)
     const elModal = document.querySelector('.location-name-modal button')
     elModal.onclick = onSavePos;
     const elSearch = document.querySelector('.search-location button')
-    elSearch.addEventListener('click',onSubmitSearch)
+    elSearch.addEventListener('click', onSubmitSearch)
+     document.querySelector('.location-table').onclick = eventHandler;
+     
+
 }
 
-<<<<<<< HEAD
+function eventHandler(ev){
+    if (ev.target.className === 'goto-location') onGotoLocation(ev)
+    else onDeleteLocation(ev)
+}
 
-function onSubmitSearch(ev){
-        ev.preventDefault();
-        const elInput =document.querySelector('.search-input')
-        mapService.searchLoc(elInput.value)
+function onSubmitSearch(ev) {
+    ev.preventDefault();
+    const elInput = document.querySelector('.search-input')
+    mapService.searchLoc(elInput.value)
 }
 
 
-=======
 function renderTable(locations) {
     var locations = locService.getLocations();
     if (!locations || locations.length === 0) {
@@ -107,9 +113,23 @@ function renderTable(locations) {
     document.querySelector('.location-table').innerHTML = strHTMLs.join('')
 }
 
-function hideLocationModal(){
+function hideLocationModal() {
     document.querySelector('.location-name-input').value = ''
     document.querySelector('.location-name-modal').hidden = true;
-    
 }
->>>>>>> 80d6a07a5aa44b1aff27062e2bef60fb1e866153
+
+function onDeleteLocation(ev) {
+    if (!ev.target.dataset.id) return;
+    const itemId = ev.target.dataset.id;
+    locService.deleteLocation(itemId)
+    renderTable()
+}
+
+function onGotoLocation(ev){
+    if (!ev.target.dataset.id) return;
+    const itemId = ev.target.dataset.id;
+   let position = locService.findLocation(itemId)
+   panTo(position.lat, position.lng)
+
+}
+
