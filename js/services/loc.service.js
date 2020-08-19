@@ -39,6 +39,7 @@ function createLocation(lat, lng, createdAt, name) {
 }
 
 function getLocations() {
+    if (!gLocations.length) gLocations = storageService.loadFromStorage(KEY)
     return gLocations;
 }
 

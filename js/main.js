@@ -5,14 +5,14 @@ import { mapService } from './services/map.service.js'
 var gMap;
 var gCurPos = {}
 
-function initCurPos(){
-    gCurPos.lan=32.0749831;
-    gCurPos.lng=34.9120554;
+function initCurPos() {
+    gCurPos.lan = 32.0749831;
+    gCurPos.lng = 34.9120554;
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams) {
         gCurPos.lan = urlParams.get('lan');
         gCurPos.lng = urlParams.get('lng');
-        console.log(gCurPos.lan,gCurPos.lng,'yeah man');
+        console.log(gCurPos.lan, gCurPos.lng, 'yeah man');
     }
 
 }
@@ -24,9 +24,15 @@ window.onload = () => {
     initCurPos();
     initMap()
         .then(() => {
-            panTo(gCurPos.lan,gCurPos.lng)
-            addMarker({ lat: gCurPos.lan, lng: gCurPos.lng })
+            panTo(gCurPos.lan, gCurPos.lng)
+            addMarker('You Here', { lat: gCurPos.lan, lng: gCurPos.lng })
             addListeners()
+            var locations = getLocations()
+            if (locations) {
+                locations.map((pos) => {
+                    addMarker(pos.name, { lat: pos.lat, lng: pos.lng })
+                })
+            }
         })
 
         .catch(console.log('INIT MAP ERROR'))
@@ -57,13 +63,18 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
         })
 }
 
-function addMarker(loc) {
+function addMarker(name, loc) {
     var marker = new google.maps.Marker({
         position: loc,
         map: gMap,
-        title: 'Hello World!'
+        // label: name
     });
-    return marker;
+    var infowindow = new google.maps.InfoWindow({
+        content: name
+    });
+    infowindow.open(map, marker);
+    return marker.label
+    // return marker;
 }
 
 function panTo(lat, lng) {
@@ -83,6 +94,7 @@ function onSavePos() {
     console.log('hiii');
     const elName = document.querySelector('.location-name-input')
     locService.createLocation(gCurPos.lat, gCurPos.lng, Date.now(), elName.value);
+    addMarker(elName.value, gCurPos)
     renderTable()
     hideLocationModal()
 }
@@ -109,9 +121,8 @@ function eventHandler(ev) {
 
 function onCopyLink() {
     console.log('hiii');
-   const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
-   console.log(url);
-
+    const url = `https://roitheone.github.io/TravelTip/?&lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+    console.log(url);
 
 }
 
@@ -194,8 +205,9 @@ function getPosition() {
             gCurPos.lat = res.coords.latitude
             gCurPos.lng = res.coords.longitude
             resolve(panTo(gCurPos))
-        }, (err)=>{
-            reject(handleLocationError(err))})
+        }, (err) => {
+            reject(handleLocationError(err))
+        })
     })
 }
 
