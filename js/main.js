@@ -23,7 +23,7 @@ locService.getLocs()
 
 window.onload = () => {
     initCurPos();
-    initMap(gCurPos.lat,gCurPos.lng)
+    initMap(+gCurPos.lat,+gCurPos.lng)
         .then(() => {
             addMarker({ lat: gCurPos.lat, lng: gCurPos.lng })
             addListeners()
@@ -47,6 +47,7 @@ document.querySelector('.btn').addEventListener('click', (ev) => {
 })
 
 export function initMap(lat = 32.0749831, lng = 34.9120554) {
+    console.log(lat,lng);
     return mapService.connectGoogleApi()
         .then(() => {
             gMap = new google.maps.Map(
