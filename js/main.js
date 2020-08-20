@@ -1,4 +1,3 @@
-console.log('Main!');
 
 import { locService } from './services/loc.service.js'
 import { mapService } from './services/map.service.js'
@@ -8,9 +7,10 @@ var gCurPos = {}
 function initCurPos() {
     gCurPos.lat = 32.0749831;
     gCurPos.lng = 34.9120554;
+
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams) {
-        console.log(urlParams.keys());
+        console.log('url params', urlParams);
         gCurPos.lat = urlParams.get('lat');
         gCurPos.lng = urlParams.get('lng');
         console.log(gCurPos.lat, gCurPos.lng, 'yeah man');
@@ -23,7 +23,8 @@ locService.getLocs()
 
 window.onload = () => {
     initCurPos();
-    initMap(+gCurPos.lat, +gCurPos.lng)
+    if (gCurPos) initMap(+gCurPos.lat, +gCurPos.lng)
+    initMap()
         .then(() => {
             addListeners()
             var locations = locService.getLocations()
@@ -59,6 +60,7 @@ export function initMap(lat = 32.0749831, lng = 34.9120554) {
                 center: { lat, lng },
                 zoom: 15
             })
+            addMarker(1, ' here', { lat, lng })
         })
 }
 
@@ -74,7 +76,6 @@ function addMarker(id, name, loc) {
     });
     infowindow.open(map, marker);
     return marker.label
-    // return marker;
 }
 
 function panTo(lat, lng) {
@@ -128,9 +129,13 @@ function eventHandler(ev) {
 
 
 function onCopyLink() {
-    console.log(gCurPos.lat, gCurPos.lng);
-    const url = `https://roitheone.github.io/TravelTip/index.html?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
-    console.log(url);
+    console.log(gCurPos.lat, gCurPos.lng, 'oncopy');
+    const url = `https://roitheone.github.io/TravelTip/?lat=${gCurPos.lat}&lng=${gCurPos.lng}`
+    var copyText = document.createElement("textarea");
+    copyText.value = url;
+    copyText.select();
+    document.execCommand("copy");
+    alert("Copied the text: " + copyText.value);
 }
 
 function onSubmitSearch(ev) {
@@ -143,6 +148,7 @@ function onSubmitSearch(ev) {
             panTo(gCurPos.lat, gCurPos.lng)
             elInput.value = ''
             renderLocationName(res.formatted_address)
+            console.log('GCUR AFTER SEARCH', gCurPos);
         })
 }
 function searchLoc(att) {
