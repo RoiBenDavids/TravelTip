@@ -5,25 +5,22 @@ var gMap;
 var gCurPos = {}
 
 function initCurPos() {
-    gCurPos.lat = 32.0749831;
-    gCurPos.lng = 34.9120554;
-
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams) {
-        console.log('url params', urlParams);
-        gCurPos.lat = urlParams.get('lat');
-        gCurPos.lng = urlParams.get('lng');
-        console.log(gCurPos.lat, gCurPos.lng, 'yeah man');
+    if (urlParams.has('lat')) {
+        gCurPos.lat = +(urlParams.get('lat'));
+        gCurPos.lng = +(urlParams.get('lng'));
     }
-
+    else {
+        gCurPos.lat = 32.0749831;
+        gCurPos.lng = 34.9120554;
+    }
 }
 
 locService.getLocs()
     .then(locs => console.log('locs', locs))
 
 window.onload = () => {
-    initCurPos();
-    if (gCurPos) initMap(+gCurPos.lat, +gCurPos.lng)
+    initCurPos()
     initMap()
         .then(() => {
             addListeners()
@@ -46,13 +43,12 @@ window.onload = () => {
         })
 }
 
-document.querySelector('.btn').addEventListener('click', (ev) => {
-    console.log('Aha!', ev.target);
-    panTo(35.6895, 139.6917);
-})
+// document.querySelector('.btn').addEventListener('click', (ev) => {
+//     console.log('Aha!', ev.target);
+//     panTo(35.6895, 139.6917);
+// })
 
-export function initMap(lat = 32.0749831, lng = 34.9120554) {
-    console.log(lat, lng);
+export function initMap(lat = gCurPos.lat, lng = gCurPos.lng) {
     return mapService.connectGoogleApi()
         .then(() => {
             gMap = new google.maps.Map(
@@ -79,9 +75,8 @@ function addMarker(id, name, loc) {
 }
 
 function panTo(lat, lng) {
-    console.log(lat, lng, 'mylocation');
-    var laLatLng = new google.maps.LatLng(lat, lng);
-    gMap.panTo(laLatLng);
+    var latlng = new google.maps.LatLng(lat, lng);
+    gMap.panTo(latlng);
 }
 
 function onGetClickedPos(ev) {
@@ -135,7 +130,8 @@ function onCopyLink() {
     copyText.value = url;
     copyText.select();
     document.execCommand("copy");
-    alert("Copied the text: " + copyText.value);
+    document.body.removeChild(copyText);
+
 }
 
 function onSubmitSearch(ev) {
@@ -199,8 +195,6 @@ function hideLocationModal() {
 function onDeleteLocation(itemId) {
     locService.deleteLocation(itemId)
     renderTable()
-    // const locations = locService.getLocations()
-    // renderMarks(locations) // i was trying to delete specipic marker ->cannot do it. just all together or reload page every time
 }
 
 function onGotoLocation(itemId) {
